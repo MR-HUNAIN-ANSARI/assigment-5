@@ -1,50 +1,34 @@
-# Rock, paper, scissors Python Project
-# In this Kylie Ying tutorial, you will work with random.choice(),
-#  if statements, and getting user input. This is a great project to 
-# help you build on the fundamentals like conditionals and functions.
-import random
+import streamlit as st
 
-def get_computer_choice():
-    return random.choice(["rock", "paper", "scissors"])
+def calculate_bmi(weight, height):
+    """Compute the Body Mass Index (BMI) from weight (kg) and height (m)."""
+    bmi = weight / (height ** 2)
+    return round(bmi, 2)
 
-def get_winner(user_choice, computer_choice):
-    if user_choice == computer_choice:
-        return "tie"
-    if (user_choice == "rock" and computer_choice == "scissors") or \
-       (user_choice == "scissors" and computer_choice == "paper") or \
-       (user_choice == "paper" and computer_choice == "rock"):
-        return "user"
-    return "computer"
+def main():
+    st.title("🔢 BMI Calculator")
+    st.write("Easily determine your Body Mass Index (BMI) and assess your health status.")
 
-def play_game():
-    print("Welcome to Rock, Paper, Scissors - Best of 3! 🏆")
-    
-    user_score, computer_score = 0, 0
-    for _ in range(3):
-        user_choice = input("Choose rock, paper, or scissors: ").lower()
-        if user_choice not in ["rock", "paper", "scissors"]:
-            print("Invalid choice, try again!")
-            continue
-        
-        computer_choice = get_computer_choice()
-        print(f"Computer chose: {computer_choice}")
+    # User Input
+    weight = st.number_input("Enter your weight in kilograms (kg):", min_value=1.0, format="%.2f")
+    height = st.number_input("Enter your height in meters (m):", min_value=0.5, format="%.2f")
 
-        winner = get_winner(user_choice, computer_choice)
-        if winner == "user":
-            print("🎉 You win this round!")
-            user_score += 1
-        elif winner == "computer":
-            print("💻 Computer wins this round!")
-            computer_score += 1
+    if st.button("Compute BMI"):
+        if height > 0:
+            bmi = calculate_bmi(weight, height)
+            st.success(f"Your BMI Score: {bmi}")
+
+            # BMI Classification
+            if bmi < 18.5:
+                st.warning("🚨 You are underweight. Consider a balanced diet!")
+            elif 18.5 <= bmi < 24.9:
+                st.success("🎉 Great! You have a healthy weight.")
+            elif 25 <= bmi < 29.9:
+                st.warning("⚠️ You are overweight. Exercise and diet can help!")
+            else:
+                st.error("❌ Obesity detected! Prioritize a healthier lifestyle.")
         else:
-            print("It's a tie! 🤝")
-
-    if user_score > computer_score:
-        print("🏆 You won the game!")
-    elif computer_score > user_score:
-        print("😢 Computer wins the game!")
-    else:
-        print("Game ended in a tie!")
+            st.error("⚠️ Please enter a valid height.")
 
 if __name__ == "__main__":
-    play_game()
+    main()
